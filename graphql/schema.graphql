@@ -16,7 +16,11 @@ type Query {
 
     users(
         name: String @where(operator: "like")
+        orderBy: _ @orderBy(columns: ["created_at", "name"])
+        where: _ @whereConditions(columns: ["name", "email"])
     ): [User!]! @paginate(defaultCount: 10)
+
+    usersAll: [User!] @all
 
     posts(
         title: String @where(operator: "like")
@@ -40,6 +44,23 @@ type Query {
     ticket(
         id: ID @eq
     ): Ticket @find
+}
+
+type Mutation {
+    createUser(input: CreateUserInput! @spread): User! @create
+    updateUser(id: ID!, email: String, password: String, name: String): User @update
+    deleteUser(id: ID!): DeleteResponse
+}
+
+input CreateUserInput {
+    name: String!
+    email: String!,
+    password: String!
+}
+
+type DeleteResponse {
+    status: String!
+    message: String!
 }
 
 "Account of a person who utilizes this application."
